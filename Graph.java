@@ -77,7 +77,7 @@ class Graph {
         
     }
     
-    private void clearNodes() {
+    private void clearVisitedNodes() {
         for(int i=0;i<this.nodes.length;i++){
             this.nodes[i].visited=false;
         }
@@ -99,7 +99,7 @@ class Graph {
                 queue.add(neighbour);
             }
         }
-        this.clearNodes();
+        this.clearVisitedNodes();
         return temp;
     }
 }
