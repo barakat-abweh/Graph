@@ -70,8 +70,8 @@ class Graph {
     }
     
     boolean isConnected(){
-        ArrayList<Node> temp=bfs();
-        if(temp.size()!=this.nodes.length){
+        int visitedNodes=bfs().size();
+        if(visitedNodes!=this.nodes.length){
             return false;
         }
         return true;
