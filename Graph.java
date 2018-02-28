@@ -7,6 +7,8 @@ package Graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  *
@@ -66,5 +68,36 @@ class Graph {
         return node;
     }
     
+    boolean isConnected(){
+        ArrayList<Node> temp=new ArrayList<Node>();
+        Queue queue=new LinkedList();
+        queue.add(this.nodes[0]);
+        temp.add(this.nodes[0]);
+        this.nodes[0].visited=true;
+        while(!queue.isEmpty()) {
+            Node node = (Node)queue.remove();
+            Node neighbour=null;
+            
+            while((neighbour=node.getUnvisitedNeighbour())!=null){
+                neighbour.visited=true;
+                temp.add(neighbour);
+                queue.add(neighbour);
+            }
+        }
+        this.clearNodes();
+        if(temp.size()!=this.nodes.length){
+            return false;
+        }
+        return true;
+    }
     
+    private void printNode(Node node) {
+        System.out.println(node);
+    }
+    
+    private void clearNodes() {
+        for(int i=0;i<this.nodes.length;i++){
+            this.nodes[i].visited=false;
+        }
+    }
 }
