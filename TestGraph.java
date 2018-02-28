@@ -13,5 +13,6 @@ public class TestGraph {
     public static void main(String []args){
         Graph graph=new Graph();
         graph.printAdjMatrix();
+        System.out.println(graph.isConnected()?"Connected":"Disconnected");
     }
 }
