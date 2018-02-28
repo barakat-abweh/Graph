@@ -69,6 +69,21 @@ class Graph {
     }
     
     boolean isConnected(){
+        ArrayList<Node> temp=bfs();
+        if(temp.size()!=this.nodes.length){
+            return false;
+        }
+        return true;
+        
+    }
+    
+    private void clearNodes() {
+        for(int i=0;i<this.nodes.length;i++){
+            this.nodes[i].visited=false;
+        }
+    }
+    
+    private ArrayList<Node> bfs() {
         ArrayList<Node> temp=new ArrayList<Node>();
         Queue queue=new LinkedList();
         queue.add(this.nodes[0]);
@@ -85,19 +100,6 @@ class Graph {
             }
         }
         this.clearNodes();
-        if(temp.size()!=this.nodes.length){
-            return false;
-        }
-        return true;
-    }
-    
-    private void printNode(Node node) {
-        System.out.println(node);
-    }
-    
-    private void clearNodes() {
-        for(int i=0;i<this.nodes.length;i++){
-            this.nodes[i].visited=false;
-        }
+        return temp;
     }
 }
