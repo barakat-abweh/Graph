@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  *
@@ -83,7 +84,7 @@ class Graph {
         }
     }
     
-    private ArrayList<Node> bfs() {
+    ArrayList<Node> bfs() {
         ArrayList<Node> temp=new ArrayList<Node>();
         Queue queue=new LinkedList();
         queue.add(this.nodes[0]);
@@ -97,6 +98,26 @@ class Graph {
                 neighbour.visited=true;
                 temp.add(neighbour);
                 queue.add(neighbour);
+            }
+        }
+        this.clearVisitedNodes();
+        return temp;
+    }
+    ArrayList<Node> dfs() {
+        ArrayList<Node> temp=new ArrayList<Node>();
+        Stack stack=new Stack();
+        stack.push(this.nodes[0]);
+        temp.add(this.nodes[0]);
+        this.nodes[0].visited=true;
+        while(!stack.isEmpty()){
+            Node node = (Node)stack.peek();
+            Node neighbour=node.getUnvisitedNeighbour();
+            if(neighbour!=null){
+                neighbour.visited = true;
+                temp.add(neighbour);
+                stack.push(neighbour);
+            }else{
+                stack.pop();
             }
         }
         this.clearVisitedNodes();
