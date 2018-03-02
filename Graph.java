@@ -16,17 +16,47 @@ import java.util.Stack;
  * @author theblackdevil
  */
 class Graph {
-    
     /**
      * @param args the command line arguments
      */
     int adjMatrix[][];
-    Node[] nodes;
-    ReadFile rf;
+    private Node[] nodes;
+    private  ReadFile rf;
+    private double eccentricity=Double.POSITIVE_INFINITY,radius,diameter=Double.POSITIVE_INFINITY,girth=Double.POSITIVE_INFINITY,circumference=Double.POSITIVE_INFINITY;
     public Graph() {
         initializeNodes();
         initializeAdjMatrix(nodes.length);
         linkNodesToNeighbours();
+    }
+    public double getEccentricity(){
+        return this.eccentricity;
+    }
+    public void setEccentricity(double eccentricity){
+        this.eccentricity=eccentricity;
+    }
+    public double getRadius(){
+        return this.radius;
+    }
+    public void setRadius(double radius){
+        this.radius=radius;
+    }
+    public double getDiameter(){
+        return this.diameter;
+    }
+    public void setDiameter(double diameter){
+        this.diameter=diameter;
+    }
+    public double getGirth(){
+        return this.girth;
+    }
+    public void setGirth(double girth){
+        this.girth=girth;
+    }
+    public double getCircumference(){
+        return this.circumference;
+    }
+    public void setCircumference(double circumference){
+        this.circumference=circumference;
     }
     void initializeAdjMatrix(int row){
         adjMatrix=new int[row][row];
@@ -75,7 +105,6 @@ class Graph {
             return false;
         }
         return true;
-        
     }
     
     private void clearVisitedNodes() {
@@ -93,7 +122,6 @@ class Graph {
         while(!queue.isEmpty()) {
             Node node = (Node)queue.remove();
             Node neighbour=null;
-            
             while((neighbour=node.getUnvisitedNeighbour())!=null){
                 neighbour.visited=true;
                 temp.add(neighbour);
@@ -123,4 +151,9 @@ class Graph {
         this.clearVisitedNodes();
         return temp;
     }
+    
+    String calculateDistances() {
+        return "Connected";
+    }
+    
 }
