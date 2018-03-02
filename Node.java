@@ -21,6 +21,9 @@ public class Node {
         this.neighbours=new ArrayList<>();
         this.distances=new ArrayList<>();
     }
+    public int getDistance(Node node){
+        return distances.get(neighbours.indexOf(node));
+    }
     public ArrayList<Node> getNeighbours(){
         return this.neighbours;
     }
