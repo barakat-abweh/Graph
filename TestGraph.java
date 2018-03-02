@@ -12,7 +12,6 @@ package Graph;
 public class TestGraph {
     public static void main(String []args){
         Graph graph=new Graph();
-        graph.printAdjMatrix();
-        System.out.println(graph.isConnected()?"Connected":"Disconnected");
+        System.out.println(graph.isConnected()?graph.calculateDistances():"Disconnected");        
     }
 }
