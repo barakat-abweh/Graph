@@ -22,7 +22,7 @@ class Graph {
     int adjMatrix[][];
     private Node[] nodes;
     private  ReadFile rf;
-    private double eccentricity=Double.POSITIVE_INFINITY,radius,diameter=Double.POSITIVE_INFINITY,girth=Double.POSITIVE_INFINITY,circumference=Double.POSITIVE_INFINITY;
+    private double eccentricity=Double.POSITIVE_INFINITY,radius,diameter=Double.POSITIVE_INFINITY,girth=0.0,circumference=Double.POSITIVE_INFINITY;
     public Graph() {
         initializeNodes();
         initializeAdjMatrix(nodes.length);
