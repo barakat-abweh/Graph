@@ -155,13 +155,15 @@ class Graph {
         return temp;
     }
     
-    String calculateDistances() {
-        TreeSet<Double> distances=findDistances();
-        double minEcc=getMinEcc(distances);
-        double maxEcc=getMaxEcc(distances);
-        this.setRadius(minEcc);
-        this.setDiameter(maxEcc);
-        return "Connected";
+    void calculateDistances() {
+        if(this.isConnected()){
+            TreeSet<Double> distances=this.findDistances();
+            double minEcc=getMinEcc(distances);
+            double maxEcc=getMaxEcc(distances);
+            this.setRadius(minEcc);
+            this.setDiameter(maxEcc);
+        }
+        TreeSet<Double> cycles=this.findCycles();
     }
     
     TreeSet<Double> findDistances() {
@@ -171,7 +173,6 @@ class Graph {
             double tempDistances[]=findDistancesPerNode(this.nodes[i]);
             Arrays.sort(tempDistances);
             distances.add(tempDistances[tempDistances.length-1]);
-            
         }
         return distances;
     }
@@ -203,13 +204,17 @@ class Graph {
     private double getMaxEcc(TreeSet<Double> distances) {
         return distances.last();
     }
-    
-    void findGirth() {
-        
-        
+    private double getMinCycle(TreeSet<Double> cycles) {
+        return cycles.first();
     }
     
-    String findGirthAndCircumference() {
-        return "Disconnected";
+    private double getMaxCycle(TreeSet<Double> cycles) {
+        return cycles.last();
     }
+    
+    TreeSet<Double> findCycles() {
+        TreeSet<Double> cycles=new TreeSet<>();
+        return cycles;
+    }
+    
 }
