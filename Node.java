@@ -6,40 +6,56 @@
 package Graph;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
 /**
  *
  * @author theblackdevil
  */
-public class Node {
+public class Node implements Comparable<Object>{
+    
     private String name;
-    boolean visited=false;
+    boolean visited = false;
     private ArrayList<Node> neighbours;
-    private ArrayList<Integer> distances;
-    public Node(String name){
-        this.name=name;
-        this.neighbours=new ArrayList<>();
-        this.distances=new ArrayList<>();
+    
+    public Node(String name) {
+        this.name = name;
+        this.neighbours = new ArrayList<>();
     }
-    public int getDistance(Node node){
-        return distances.get(neighbours.indexOf(node));
-    }
-    public ArrayList<Node> getNeighbours(){
+    
+    public ArrayList<Node> getNeighbours() {
         return this.neighbours;
     }
-    public void addNeighbour(Node neighbour){
+    
+    public void addNeighbour(Node neighbour) {
         this.neighbours.add(neighbour);
-        this.distances.add(1);
     }
+    
     @Override
-    public String toString(){
+    public String toString() {
         return this.name;
     }
     
     Node getUnvisitedNeighbour() {
-        for(int i=0;i<this.neighbours.size();i++){
-            if(!this.neighbours.get(i).visited){return this.neighbours.get(i);}
+        for (int i = 0; i < this.neighbours.size(); i++) {
+            if (!this.neighbours.get(i).visited) {
+                return this.neighbours.get(i);
+            }
         }
+        
         return null;
     }
+    
+    @Override
+    public int compareTo(Object node) {
+        if(Integer.parseInt(this.toString()) == Integer.parseInt(((Node)node).toString())) return 0;
+        if(Integer.parseInt(this.toString()) > Integer.parseInt(((Node)node).toString())) return 1;
+        return -1;
+    }
+    
+    void sortNeighbours() {
+        Collections.sort(this.neighbours);
+    }
+    
+    
+    
 }
