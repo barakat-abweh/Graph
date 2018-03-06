@@ -5,11 +5,13 @@
 */
 package Graph;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.TreeSet;
 
 /**
  *
@@ -22,17 +24,14 @@ class Graph {
     int adjMatrix[][];
     private Node[] nodes;
     private  ReadFile rf;
-    private double eccentricity=Double.POSITIVE_INFINITY,radius,diameter=Double.POSITIVE_INFINITY,girth=0.0,circumference=Double.POSITIVE_INFINITY;
+    private double radius=Double.POSITIVE_INFINITY;
+    private double diameter=Double.POSITIVE_INFINITY;
+    private double girth=0.0;
+    private double circumference=Double.POSITIVE_INFINITY;
     public Graph() {
         initializeNodes();
         initializeAdjMatrix(nodes.length);
         linkNodesToNeighbours();
-    }
-    public double getEccentricity(){
-        return this.eccentricity;
-    }
-    public void setEccentricity(double eccentricity){
-        this.eccentricity=eccentricity;
     }
     public double getRadius(){
         return this.radius;
@@ -88,6 +87,10 @@ class Graph {
             Node secondNode=getNode(second);
             firstNode.addNeighbour(secondNode);
             secondNode.addNeighbour(firstNode);
+        }
+        for(int i=0;i<this.nodes.length;i++)
+        {
+            this.nodes[i].sortNeighbours();
         }
     }
     
@@ -153,7 +156,60 @@ class Graph {
     }
     
     String calculateDistances() {
+        TreeSet<Double> distances=findDistances();
+        double minEcc=getMinEcc(distances);
+        double maxEcc=getMaxEcc(distances);
+        this.setRadius(minEcc);
+        this.setDiameter(maxEcc);
         return "Connected";
     }
     
+    TreeSet<Double> findDistances() {
+        TreeSet<Double> distances=new TreeSet<>();
+        for(int i=0;i<this.nodes.length;i++)
+        {
+            double tempDistances[]=findDistancesPerNode(this.nodes[i]);
+            Arrays.sort(tempDistances);
+            distances.add(tempDistances[tempDistances.length-1]);
+            
+        }
+        return distances;
+    }
+    
+    double[] findDistancesPerNode(Node source) {
+        Queue<Node> queue=new LinkedList<>();
+        queue.add(source);
+        double distances[]=new double[this.nodes.length];
+        Arrays.fill(distances, Double.POSITIVE_INFINITY);
+        distances[Integer.parseInt(source.toString())-1]=0;
+        while(!queue.isEmpty())
+        {
+            int node=Integer.parseInt(queue.poll().toString())-1;
+            for(Node neighbour:this.nodes[node].getNeighbours())
+            {
+                if(distances[Integer.parseInt(neighbour.toString())-1]==Double.POSITIVE_INFINITY){
+                    distances[Integer.parseInt(neighbour.toString())-1]=distances[node]+1;
+                    queue.add(neighbour);
+                }
+            }
+        }
+        return distances;
+    }
+    
+    private double getMinEcc(TreeSet<Double> distances) {
+        return distances.first();
+    }
+    
+    private double getMaxEcc(TreeSet<Double> distances) {
+        return distances.last();
+    }
+    
+    void findGirth() {
+        
+        
+    }
+    
+    String findGirthAndCircumference() {
+        return "Disconnected";
+    }
 }
