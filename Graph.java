@@ -29,9 +29,9 @@ class Graph {
     private double girth=0.0;
     private double circumference=Double.POSITIVE_INFINITY;
     public Graph() {
-        initializeNodes();
-        initializeAdjMatrix(nodes.length);
-        linkNodesToNeighbours();
+        this.initializeNodes();
+        this.initializeAdjMatrix(nodes.length);
+        this.linkNodesToNeighbours();
     }
     public double getRadius(){
         return this.radius;
@@ -57,7 +57,7 @@ class Graph {
     public void setCircumference(double circumference){
         this.circumference=circumference;
     }
-    void initializeAdjMatrix(int row){
+    final void initializeAdjMatrix(int row){
         adjMatrix=new int[row][row];
     }
     void buildAdjMatrix(int row,int col){
@@ -65,10 +65,12 @@ class Graph {
         adjMatrix[col-1][row-1]=1;
     }
     void printAdjMatrix(){
-        for(int i=0;i<adjMatrix.length;i++){System.out.println(Arrays.toString(adjMatrix[i]));}
+        for (int[] adjMatrix1 : adjMatrix) {
+            System.out.println(Arrays.toString(adjMatrix1));
+        }
     }
     
-    void initializeNodes() {
+    final void initializeNodes() {
         rf=new ReadFile("/home/theblackdevil/Desktop","graph.in");
         nodes=new Node[rf.getNodesNames().length];
         for(int i=0;i<nodes.length;i++){
@@ -76,7 +78,7 @@ class Graph {
         }
     }
     
-    void linkNodesToNeighbours() {
+    final void linkNodesToNeighbours() {
         ArrayList<String> connections=rf.getConnections();
         while(!connections.isEmpty()){
             String first=connections.get(0).substring(1,2);
@@ -88,36 +90,35 @@ class Graph {
             firstNode.addNeighbour(secondNode);
             secondNode.addNeighbour(firstNode);
         }
-        for(int i=0;i<this.nodes.length;i++)
-        {
-            this.nodes[i].sortNeighbours();
+        for (Node node : this.nodes) {
+            node.sortNeighbours();
         }
     }
     
     Node getNode(String nodename) {
         Node node=null;
-        for(int i=0;i<nodes.length;i++){
-            if(nodes[i].toString().equalsIgnoreCase(nodename)){node=nodes[i];break;}
+        for (Node node1 : nodes) {
+            if (node1.toString().equalsIgnoreCase(nodename)) {
+                node = node1;
+                break;
+            }
         }
         return node;
     }
     
     boolean isConnected(){
         int visitedNodes=bfs().size();
-        if(visitedNodes!=this.nodes.length){
-            return false;
-        }
-        return true;
+        return visitedNodes == this.nodes.length;
     }
     
     private void clearVisitedNodes() {
-        for(int i=0;i<this.nodes.length;i++){
-            this.nodes[i].visited=false;
+        for (Node node : this.nodes) {
+            node.visited = false;
         }
     }
     
     ArrayList<Node> bfs() {
-        ArrayList<Node> temp=new ArrayList<Node>();
+        ArrayList<Node> temp=new ArrayList<>();
         Queue queue=new LinkedList();
         queue.add(this.nodes[0]);
         temp.add(this.nodes[0]);
@@ -134,27 +135,6 @@ class Graph {
         this.clearVisitedNodes();
         return temp;
     }
-    ArrayList<Node> dfs() {
-        ArrayList<Node> temp=new ArrayList<Node>();
-        Stack stack=new Stack();
-        stack.push(this.nodes[0]);
-        temp.add(this.nodes[0]);
-        this.nodes[0].visited=true;
-        while(!stack.isEmpty()){
-            Node node = (Node)stack.peek();
-            Node neighbour=node.getUnvisitedNeighbour();
-            if(neighbour!=null){
-                neighbour.visited = true;
-                temp.add(neighbour);
-                stack.push(neighbour);
-            }else{
-                stack.pop();
-            }
-        }
-        this.clearVisitedNodes();
-        return temp;
-    }
-    
     void calculateDistances() {
         if(this.isConnected()){
             TreeSet<Double> distances=this.findDistances();
@@ -168,9 +148,8 @@ class Graph {
     
     TreeSet<Double> findDistances() {
         TreeSet<Double> distances=new TreeSet<>();
-        for(int i=0;i<this.nodes.length;i++)
-        {
-            double tempDistances[]=findDistancesPerNode(this.nodes[i]);
+        for (Node node : this.nodes) {
+            double[] tempDistances = findDistancesPerNode(node);
             Arrays.sort(tempDistances);
             distances.add(tempDistances[tempDistances.length-1]);
         }
@@ -196,7 +175,6 @@ class Graph {
         }
         return distances;
     }
-    
     private double getMinEcc(TreeSet<Double> distances) {
         return distances.first();
     }
@@ -211,10 +189,28 @@ class Graph {
     private double getMaxCycle(TreeSet<Double> cycles) {
         return cycles.last();
     }
-    
     TreeSet<Double> findCycles() {
         TreeSet<Double> cycles=new TreeSet<>();
         return cycles;
     }
-    
+    ArrayList<Node> dfs() {
+        ArrayList<Node> temp=new ArrayList<>();
+        Stack stack=new Stack();
+        stack.push(this.nodes[0]);
+        temp.add(this.nodes[0]);
+        this.nodes[0].visited=true;
+        while(!stack.isEmpty()){
+            Node node = (Node)stack.peek();
+            Node neighbour=node.getUnvisitedNeighbour();
+            if(neighbour!=null){
+                neighbour.visited = true;
+                temp.add(neighbour);
+                stack.push(neighbour);
+            }else{
+                stack.pop();
+            }
+        }
+        this.clearVisitedNodes();
+        return temp;
+    }
 }
