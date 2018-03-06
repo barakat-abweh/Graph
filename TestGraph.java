@@ -12,6 +12,6 @@ package Graph;
 public class TestGraph {
     public static void main(String []args){
         Graph graph=new Graph();
-        System.out.println(graph.isConnected()?graph.calculateDistances():graph.findGirthAndCircumference());
+        graph.calculateDistances();
     }
 }
