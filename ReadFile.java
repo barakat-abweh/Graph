@@ -3,7 +3,7 @@
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-package specialtopics.assingment1;
+package Graph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -44,12 +44,15 @@ public class ReadFile {
         }
     }
     private void closeFile() {
-       this.scanner.close();
+        this.scanner.close();
     }
-     public String[] getNodesNames(){
-    return this.nodesNames;
+    public String[] getNodesNames(){
+        return this.nodesNames;
+    }
+    public String getNodeName(int index){
+        return this.nodesNames[index];
     }
     public ArrayList<String> getConnections(){
-    return this.connections;
+        return this.connections;
     }
 }
