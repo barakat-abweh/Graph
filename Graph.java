@@ -6,13 +6,7 @@
 package Graph;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
-import java.util.TreeSet;
-
+import java.util.*;
 /**
  *
  * @author theblackdevil
@@ -21,13 +15,17 @@ class Graph {
     /**
      * @param args the command line arguments
      */
-    int adjMatrix[][];
+    private int adjMatrix[][];
+    int connections[][];
+    private int numberOfConnections=0;
     private Node[] nodes;
     private  ReadFile rf;
     private double radius=Double.POSITIVE_INFINITY;
     private double diameter=Double.POSITIVE_INFINITY;
     private double girth=0.0;
     private double circumference=Double.POSITIVE_INFINITY;
+    private TreeSet<String> bridges;
+    private GraphCycleFinder gcf=new GraphCycleFinder();
     public Graph() {
         this.initializeNodes();
         this.initializeAdjMatrix(nodes.length);
@@ -57,34 +55,44 @@ class Graph {
     public void setCircumference(double circumference){
         this.circumference=circumference;
     }
+    final private void initializeConnectionsMatrix(int size) {
+        this.connections=new int[size][2];
+    }
     final void initializeAdjMatrix(int row){
-        adjMatrix=new int[row][row];
+        this.adjMatrix=new int[row][row];
     }
-    void buildAdjMatrix(int row,int col){
-        adjMatrix[row-1][col-1]=1;
-        adjMatrix[col-1][row-1]=1;
+    private void buildAdjMatrix(int row,int col){
+        this.adjMatrix[row-1][col-1]=1;
+        this.adjMatrix[col-1][row-1]=1;
     }
-    void printAdjMatrix(){
+    final private void buildConnectionsMatrix(int row,int first,int second) {
+        this.connections[row][0]=first;
+        this.connections[row][1]=second;
+    }
+    public void printAdjMatrix(){
         for (int[] adjMatrix1 : adjMatrix) {
             System.out.println(Arrays.toString(adjMatrix1));
         }
     }
     
-    final void initializeNodes() {
+    final private void initializeNodes() {
         rf=new ReadFile("/home/theblackdevil/Desktop","graph.in");
-        nodes=new Node[rf.getNodesNames().length];
+        this.nodes=new Node[rf.getNodesNames().length];
         for(int i=0;i<nodes.length;i++){
-            nodes[i]=new Node(rf.getNodeName(i));
+            this.nodes[i]=new Node(rf.getNodeName(i));
         }
+        Arrays.sort(this.nodes);
     }
-    
-    final void linkNodesToNeighbours() {
+    final private void linkNodesToNeighbours() {
         ArrayList<String> connections=rf.getConnections();
+        this.initializeConnectionsMatrix(connections.size());
+        int index=0;
         while(!connections.isEmpty()){
             String first=connections.get(0).substring(1,2);
             String second=connections.get(0).substring(3,4);
             connections.remove(0);
             buildAdjMatrix(Integer.parseInt(first), Integer.parseInt(second));
+            buildConnectionsMatrix(index++,Integer.parseInt(first), Integer.parseInt(second));
             Node firstNode=getNode(first);
             Node secondNode=getNode(second);
             firstNode.addNeighbour(secondNode);
@@ -95,9 +103,9 @@ class Graph {
         }
     }
     
-    Node getNode(String nodename) {
+    public Node getNode(String nodename) {
         Node node=null;
-        for (Node node1 : nodes) {
+        for (Node node1 : this.nodes) {
             if (node1.toString().equalsIgnoreCase(nodename)) {
                 node = node1;
                 break;
@@ -106,9 +114,8 @@ class Graph {
         return node;
     }
     
-    boolean isConnected(){
-        int visitedNodes=bfs().size();
-        return visitedNodes == this.nodes.length;
+    private boolean isConnected(){
+        return bfs().size()== this.nodes.length;
     }
     
     private void clearVisitedNodes() {
@@ -116,8 +123,7 @@ class Graph {
             node.visited = false;
         }
     }
-    
-    ArrayList<Node> bfs() {
+    private ArrayList<Node> bfs() {
         ArrayList<Node> temp=new ArrayList<>();
         Queue queue=new LinkedList();
         queue.add(this.nodes[0]);
@@ -136,6 +142,7 @@ class Graph {
         return temp;
     }
     void calculateDistances() {
+        this.findCycles();
         if(this.isConnected()){
             TreeSet<Double> distances=this.findDistances();
             double minEcc=getMinEcc(distances);
@@ -143,7 +150,15 @@ class Graph {
             this.setRadius(minEcc);
             this.setDiameter(maxEcc);
         }
-        TreeSet<Double> cycles=this.findCycles();
+        TreeSet<String> cycles=gcf.getCycles();
+        if(cycles.size()<=0){
+            this.bridges.add("Each edge is a bridge");
+        }
+        else{
+        this.setGirth(this.getMinCycle(cycles));
+        this.setCircumference(this.getMaxCycle(cycles));
+        this.findBridges(cycles);
+        }
     }
     
     TreeSet<Double> findDistances() {
@@ -156,7 +171,7 @@ class Graph {
         return distances;
     }
     
-    double[] findDistancesPerNode(Node source) {
+    private double[] findDistancesPerNode(Node source) {
         Queue<Node> queue=new LinkedList<>();
         queue.add(source);
         double distances[]=new double[this.nodes.length];
@@ -182,35 +197,58 @@ class Graph {
     private double getMaxEcc(TreeSet<Double> distances) {
         return distances.last();
     }
-    private double getMinCycle(TreeSet<Double> cycles) {
-        return cycles.first();
+    private double getMinCycle(TreeSet<String> cycles) {
+        double length=Double.POSITIVE_INFINITY;
+        for(String cycle:cycles){
+            int cycleLength=cycle.split(",").length;
+            length=cycleLength<length?cycleLength:length;
+        }
+        return length;
     }
     
-    private double getMaxCycle(TreeSet<Double> cycles) {
-        return cycles.last();
+    private double getMaxCycle(TreeSet<String> cycles) {
+        double length=Double.NEGATIVE_INFINITY;
+        for(String cycle:cycles){
+             int cycleLength=cycle.split(",").length;
+            length=cycleLength>length?cycleLength:length;
+        }
+        return length;
     }
-    TreeSet<Double> findCycles() {
-        TreeSet<Double> cycles=new TreeSet<>();
-        return cycles;
+    void findCycles() {
+        gcf.setGraph(this.connections);
+        gcf.run();
     }
-    ArrayList<Node> dfs() {
-        ArrayList<Node> temp=new ArrayList<>();
-        Stack stack=new Stack();
-        stack.push(this.nodes[0]);
-        temp.add(this.nodes[0]);
-        this.nodes[0].visited=true;
-        while(!stack.isEmpty()){
-            Node node = (Node)stack.peek();
-            Node neighbour=node.getUnvisitedNeighbour();
-            if(neighbour!=null){
-                neighbour.visited = true;
-                temp.add(neighbour);
-                stack.push(neighbour);
-            }else{
-                stack.pop();
+    @Override
+    public String toString(){
+        return "The Graph has the following attributes:\n"
+                + "1. Number of nodes = "+this.nodes.length
+                +"\n2. Raidus = "+this.getRadius()
+                +"\n3. Diameter = "+this.getDiameter()
+                +"\n4. Girth = "+this.getGirth()
+                +"\n5. Circumference = "+this.getCircumference()
+                +"\n6. Bridges = "+this.getBridges();
+    }
+    
+    private void findBridges(TreeSet<String> cycles) {
+        ArrayList<Node> originalNodes=new ArrayList<>(Arrays.asList(this.nodes));
+        TreeSet<String> nodesNames=new TreeSet<>();
+        for(String cycle:cycles){
+            nodesNames.addAll(Arrays.asList(cycle.split(",")));
+        }
+        ArrayList<Node>cyclesNodes=new ArrayList<>();
+        for(String nodeName:nodesNames){
+            cyclesNodes.add(this.getNode(nodeName));
+        }
+        originalNodes.removeAll(cyclesNodes);
+        this.bridges=new TreeSet<>();
+        for(Node node:originalNodes){
+            for(Node neighbour:node.getNeighbours()){
+                this.bridges.add(node+"-----"+neighbour);
             }
         }
-        this.clearVisitedNodes();
-        return temp;
+    }
+
+    private TreeSet getBridges() {
+       return this.bridges;
     }
 }
