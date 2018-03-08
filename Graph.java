@@ -157,7 +157,13 @@ class Graph {
         else{
         this.setGirth(this.getMinCycle(cycles));
         this.setCircumference(this.getMaxCycle(cycles));
-        this.findBridges(cycles);
+        }
+        if(isConnected()){
+            this.findBridges(cycles);
+        }
+        else{
+            this.bridges=new TreeSet<>();
+            this.bridges.add("The Graph is disconnected, it contains no bridges and there is no way to find any bridge");
         }
     }
     
@@ -222,7 +228,7 @@ class Graph {
     public String toString(){
         return "The Graph has the following attributes:\n"
                 + "1. Number of nodes = "+this.nodes.length
-                +"\n3. Raidus = "+(this.isConnected()?"Connected":"Disconnected")
+                +"\n2. Connected? = "+(this.isConnected()?"Connected":"Disconnected")
                 +"\n3. Raidus = "+this.getRadius()
                 +"\n4. Diameter = "+this.getDiameter()
                 +"\n5. Girth = "+this.getGirth()
