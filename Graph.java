@@ -222,11 +222,12 @@ class Graph {
     public String toString(){
         return "The Graph has the following attributes:\n"
                 + "1. Number of nodes = "+this.nodes.length
-                +"\n2. Raidus = "+this.getRadius()
-                +"\n3. Diameter = "+this.getDiameter()
-                +"\n4. Girth = "+this.getGirth()
-                +"\n5. Circumference = "+this.getCircumference()
-                +"\n6. Bridges = "+this.getBridges();
+                +"\n3. Raidus = "+(this.isConnected()?"Connected":"Disconnected")
+                +"\n3. Raidus = "+this.getRadius()
+                +"\n4. Diameter = "+this.getDiameter()
+                +"\n5. Girth = "+this.getGirth()
+                +"\n6. Circumference = "+this.getCircumference()
+                +"\n7. Bridges = "+this.getBridges();
     }
     
     private void findBridges(TreeSet<String> cycles) {
