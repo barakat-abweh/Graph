@@ -69,10 +69,12 @@ class Graph {
         this.connections[row][0]=first;
         this.connections[row][1]=second;
     }
-    public void printAdjMatrix(){
+    private String printAdjMatrix(){
+        String adjMat="";
         for (int[] adjMatrix1 : adjMatrix) {
-            System.out.println(Arrays.toString(adjMatrix1));
+            adjMat+=Arrays.toString(adjMatrix1)+"\n";
         }
+        return adjMat;
     }
     
     final private void initializeNodes() {
@@ -88,9 +90,10 @@ class Graph {
         this.initializeConnectionsMatrix(connections.size());
         int index=0;
         while(!connections.isEmpty()){
-            String first=connections.get(0).substring(1,2);
-            String second=connections.get(0).substring(3,4);
-            connections.remove(0);
+            String connection=connections.remove(0);
+           connection = connection.replaceAll("[^-?0-9]+", " ");
+            String first=connection.split(" ")[1];
+            String second=connection.split(" ")[2];
             buildAdjMatrix(Integer.parseInt(first), Integer.parseInt(second));
             buildConnectionsMatrix(index++,Integer.parseInt(first), Integer.parseInt(second));
             Node firstNode=getNode(first);
@@ -115,6 +118,7 @@ class Graph {
     }
     
     private boolean isConnected(){
+       // System.out.println(bfs());
         return bfs().size()== this.nodes.length;
     }
     
@@ -142,7 +146,6 @@ class Graph {
         return temp;
     }
     void calculateDistances() {
-        this.findCycles();
         if(this.isConnected()){
             TreeSet<Double> distances=this.findDistances();
             double minEcc=getMinEcc(distances);
@@ -150,13 +153,14 @@ class Graph {
             this.setRadius(minEcc);
             this.setDiameter(maxEcc);
         }
+            this.findCycles();
         TreeSet<String> cycles=gcf.getCycles();
         if(cycles.size()<=0){
             this.bridges.add("Each edge is a bridge");
         }
         else{
-        this.setGirth(this.getMinCycle(cycles));
-        this.setCircumference(this.getMaxCycle(cycles));
+            this.setGirth(this.getMinCycle(cycles));
+            this.setCircumference(this.getMaxCycle(cycles));
         }
         if(isConnected()){
             this.findBridges(cycles);
@@ -215,25 +219,26 @@ class Graph {
     private double getMaxCycle(TreeSet<String> cycles) {
         double length=Double.NEGATIVE_INFINITY;
         for(String cycle:cycles){
-             int cycleLength=cycle.split(",").length;
+            int cycleLength=cycle.split(",").length;
             length=cycleLength>length?cycleLength:length;
         }
         return length;
     }
     void findCycles() {
         gcf.setGraph(this.connections);
-        gcf.run();
+        gcf.start();
     }
     @Override
     public String toString(){
         return "The Graph has the following attributes:\n"
                 + "1. Number of nodes = "+this.nodes.length
-                +"\n2. Connected? = "+(this.isConnected()?"Connected":"Disconnected")
-                +"\n3. Raidus = "+this.getRadius()
-                +"\n4. Diameter = "+this.getDiameter()
-                +"\n5. Girth = "+this.getGirth()
-                +"\n6. Circumference = "+this.getCircumference()
-                +"\n7. Bridges = "+this.getBridges();
+                +"\n2. Adjacency Matrix = \n"+this.printAdjMatrix()
+                +"\n3. Connected? = "+(this.isConnected()?"Connected":"Disconnected")
+                +"\n4. Raidus = "+this.getRadius()
+                +"\n5. Diameter = "+this.getDiameter()
+                +"\n6. Girth = "+this.getGirth()
+                +"\n7. Circumference = "+this.getCircumference()
+                +"\n8. Bridges = "+this.getBridges();
     }
     
     private void findBridges(TreeSet<String> cycles) {
@@ -254,8 +259,8 @@ class Graph {
             }
         }
     }
-
-    private TreeSet getBridges() {
-       return this.bridges;
+    
+    private String getBridges() {
+        return this.bridges.size()<=0?"There is no bridges":this.bridges.toString();
     }
 }
