@@ -1,0 +1,17 @@
+The Graph has the following attributes:
+1. Number of nodes = 8
+2. Adjacency Matrix = 
+[0, 1, 0, 1, 0, 0, 0, 0]
+[1, 0, 1, 1, 0, 0, 0, 0]
+[0, 1, 0, 1, 0, 0, 0, 0]
+[1, 1, 1, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 1, 1, 0]
+[0, 0, 0, 0, 1, 0, 0, 1]
+[0, 0, 0, 0, 1, 0, 0, 0]
+[0, 0, 0, 0, 0, 1, 0, 0]
+3. Connected? = Disconnected
+4. Raidus = Infinity
+5. Diameter = Infinity
+6. Girth = 3.0
+7. Circumference = 4.0
+8. Bridges = [The Graph is disconnected, it contains no bridges and there is no way to find any bridge]
