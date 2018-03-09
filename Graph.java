@@ -30,6 +30,8 @@ class Graph {
         this.initializeNodes();
         this.initializeAdjMatrix(nodes.length);
         this.linkNodesToNeighbours();
+        this.calculateDistances();
+        this.outputTofile();
     }
     public double getRadius(){
         return this.radius;
@@ -91,7 +93,7 @@ class Graph {
         int index=0;
         while(!connections.isEmpty()){
             String connection=connections.remove(0);
-           connection = connection.replaceAll("[^-?0-9]+", " ");
+            connection = connection.replaceAll("[^-?0-9]+", " ");
             String first=connection.split(" ")[1];
             String second=connection.split(" ")[2];
             buildAdjMatrix(Integer.parseInt(first), Integer.parseInt(second));
@@ -118,7 +120,6 @@ class Graph {
     }
     
     private boolean isConnected(){
-       // System.out.println(bfs());
         return bfs().size()== this.nodes.length;
     }
     
@@ -153,7 +154,7 @@ class Graph {
             this.setRadius(minEcc);
             this.setDiameter(maxEcc);
         }
-            this.findCycles();
+        this.findCycles();
         TreeSet<String> cycles=gcf.getCycles();
         if(cycles.size()<=0){
             this.bridges.add("Each edge is a bridge");
@@ -233,7 +234,7 @@ class Graph {
         return "The Graph has the following attributes:\n"
                 + "1. Number of nodes = "+this.nodes.length
                 +"\n2. Adjacency Matrix = \n"+this.printAdjMatrix()
-                +"\n3. Connected? = "+(this.isConnected()?"Connected":"Disconnected")
+                +"3. Connected? = "+(this.isConnected()?"Connected":"Disconnected")
                 +"\n4. Raidus = "+this.getRadius()
                 +"\n5. Diameter = "+this.getDiameter()
                 +"\n6. Girth = "+this.getGirth()
@@ -262,5 +263,9 @@ class Graph {
     
     private String getBridges() {
         return this.bridges.size()<=0?"There is no bridges":this.bridges.toString();
+    }
+    
+    private void outputTofile() {
+        new OutputFile("/home/theblackdevil/Desktop","graph.out",this.toString());
     }
 }
