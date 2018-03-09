@@ -12,7 +12,5 @@ package Graph;
 public class TestGraph {
     public static void main(String []args){
         Graph graph=new Graph();
-        graph.calculateDistances();
-        System.out.println(graph.toString());
     }
 }
