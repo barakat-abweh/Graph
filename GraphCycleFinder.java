@@ -6,7 +6,7 @@ Refference:https://stackoverflow.com/questions/12367801/finding-all-cycles-in-un
 */
 import java.util.*;
 
-class GraphCycleFinder implements Runnable{
+class GraphCycleFinder {
     TreeSet<String> cyclesTree;
     //  Graph modeled as list of edges
     int[][] graph ;
@@ -147,8 +147,8 @@ class GraphCycleFinder implements Runnable{
         return ret;
     }
     
-    @Override
-    public void run() {
+ 
+    public void start() {
         cyclesTree=new TreeSet<>();
         for (int[] graph1 : graph) {
             for (int j = 0; j < graph1.length; j++) {
