@@ -4,12 +4,8 @@
 * and open the template in the editor.
 */
 package Graph;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.*;
+import java.util.*;
 /**
  *
  * @author theblackdevil
@@ -28,14 +24,14 @@ public class ReadFile {
         this.readData();
         this.closeFile();
     }
-    private void openFile(){
+    final private void openFile(){
         this.file=new File(this.path+"/"+this.filename);
     }
-    private void readData(){
+    final private void readData(){
         try {
             this.scanner=new Scanner(file);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ReadFile.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("File Not Found");
         }
         this.nodesNames=scanner.nextLine().split(",");
         this.connections=new ArrayList<>();
@@ -43,16 +39,16 @@ public class ReadFile {
             connections.add(scanner.nextLine());
         }
     }
-    private void closeFile() {
+    final private void closeFile() {
         this.scanner.close();
     }
-    public String[] getNodesNames(){
+    final public String[] getNodesNames(){
         return this.nodesNames;
     }
-    public String getNodeName(int index){
+    final public String getNodeName(int index){
         return this.nodesNames[index];
     }
-    public ArrayList<String> getConnections(){
+    final public ArrayList<String> getConnections(){
         return this.connections;
     }
 }
