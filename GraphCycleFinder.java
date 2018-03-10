@@ -1,7 +1,7 @@
 package Graph;
 /*
-I found this class on the internet but i modified it to work with my code and it does nothing but finding cycles
-it has nothing to do with finding anything else
+I found this class on the internet but i modified it to work with my code and to reduce it's time, it does nothing but finding cycles
+it has nothing to do with finding anything else.
 Refference:https://stackoverflow.com/questions/12367801/finding-all-cycles-in-undirected-graphs
 */
 import java.util.*;
@@ -36,12 +36,13 @@ class GraphCycleFinder{
                     else if ((path.length > 2) && (x == path[path.length - 1]))
                         //  cycle found
                     {
-                        int[] p = normalize(path);
-                        int[] inv = invert(p);
-                        if (isNew(p) && isNew(inv))
-                        {
-                            cycles.add(p);
-                        }
+                        cycles.add(path);
+//                        int[] p = normalize(path);
+//                        int[] inv = invert(p);
+//                        if (isNew(p) && isNew(inv))
+//                        {
+//                            cycles.add(p);
+//                        }
                     }
                 }
             }
