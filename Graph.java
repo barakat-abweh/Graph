@@ -16,7 +16,8 @@ class Graph {
      * @param args the command line arguments
      */
     private int adjMatrix[][];
-    int connections[][];
+    private long runningTime;
+    private int connections[][];
     private int numberOfConnections=0;
     private Node[] nodes;
     private  ReadFile rf;
@@ -146,6 +147,7 @@ class Graph {
         return  numOfVisitedNodes;
     }
     void calculateDistances() {
+        long startTime=System.nanoTime();
         if(this.isConnected()){
             TreeSet<Double> distances=this.findDistances();
             double minEcc=getMinEcc(distances);
@@ -169,6 +171,8 @@ class Graph {
             this.bridges=new TreeSet<>();
             this.bridges.add("The Graph is disconnected, it contains no bridges and there is no way to find any bridge");
         }
+        long finishTime=System.nanoTime();
+        this.runningTime=finishTime-startTime;
     }
     
     TreeSet<Double> findDistances() {
@@ -238,7 +242,8 @@ class Graph {
                 +"\n5. Diameter = "+this.getDiameter()
                 +"\n6. Girth = "+this.getGirth()
                 +"\n7. Circumference = "+this.getCircumference()
-                +"\n8. Bridges = "+this.getBridges();
+                +"\n8. Bridges = "+this.getBridges()
+                +"\n9. running Time = "+this.getrunningTime()+" nano second";
     }
     
     private void findBridges(TreeSet<String> cycles) {
@@ -255,7 +260,7 @@ class Graph {
         this.bridges=new TreeSet<>();
         for(Node node:originalNodes){
             for(Node neighbour:node.getNeighbours()){
-                this.bridges.add(node+"-----"+neighbour);
+                this.bridges.add("("+node+","+neighbour+")");
             }
         }
     }
@@ -266,5 +271,9 @@ class Graph {
     
     private void outputTofile() {
         new OutputFile("/home/theblackdevil/Desktop","graph.out",this.toString());
+    }
+
+    private long getrunningTime() {
+    return this.runningTime;
     }
 }
