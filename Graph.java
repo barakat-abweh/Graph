@@ -120,7 +120,7 @@ class Graph {
     }
     
     private boolean isConnected(){
-        return bfs().size()== this.nodes.length;
+        return bfs()== this.nodes.length;
     }
     
     private void clearVisitedNodes() {
@@ -128,23 +128,22 @@ class Graph {
             node.visited = false;
         }
     }
-    private ArrayList<Node> bfs() {
-        ArrayList<Node> temp=new ArrayList<>();
+    private int bfs() {
+        int numOfVisitedNodes=0;
         Queue queue=new LinkedList();
         queue.add(this.nodes[0]);
-        temp.add(this.nodes[0]);
         this.nodes[0].visited=true;
         while(!queue.isEmpty()) {
             Node node = (Node)queue.remove();
             Node neighbour=null;
             while((neighbour=node.getUnvisitedNeighbour())!=null){
                 neighbour.visited=true;
-                temp.add(neighbour);
+                numOfVisitedNodes++;
                 queue.add(neighbour);
             }
         }
         this.clearVisitedNodes();
-        return temp;
+        return  numOfVisitedNodes;
     }
     void calculateDistances() {
         if(this.isConnected()){
