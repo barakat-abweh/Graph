@@ -33,6 +33,7 @@ class Graph {
         this.linkNodesToNeighbours();
         this.calculateDistances();
         this.outputTofile();
+        this.drawGraph();
     }
     public double getRadius(){
         return this.radius;
@@ -243,7 +244,7 @@ class Graph {
                 +"\n6. Girth = "+this.getGirth()
                 +"\n7. Circumference = "+this.getCircumference()
                 +"\n8. Bridges = "+this.getBridges()
-                +"\n9. running Time = "+this.getrunningTime()+" nano second";
+                +"\n9. running Time = "+this.getrunningTime()/1000000000.0+" seconds";
     }
     
     private void findBridges(TreeSet<String> cycles) {
@@ -272,8 +273,23 @@ class Graph {
     private void outputTofile() {
         new OutputFile("/home/theblackdevil/Desktop","graph.out",this.toString());
     }
-
+    
     private long getrunningTime() {
-    return this.runningTime;
+        return this.runningTime;
     }
+    
+    private void drawGraph() {
+        GraphDraw gd=new GraphDraw("Special Topic Assignment Graph");
+        gd.setSize(800,600);
+        gd.setVisible(true);
+        for(Node x:this.nodes){
+            gd.addNode(x.toString(),(int)(100 + Math.random() * (((gd.height*gd.width))/2)),(int)(100 + Math.random() * (((gd.height*gd.width))/2)));
+        }
+       for(Node x:this.nodes){
+            for(Node y:x.getNeighbours()){
+            gd.addEdge(gd.getIndexOfNode(x.toString()),gd.getIndexOfNode(y.toString()));
+            }
+    }
+       
+}
 }
