@@ -90,7 +90,7 @@ class Graph {
         Arrays.sort(this.nodes);
     }
     final private void linkNodesToNeighbours() {
-        ArrayList<String> connections=rf.getConnections();
+        ArrayList<String> connections=new ArrayList<>(this.rf.getConnections());
         this.initializeConnectionsMatrix(connections.size());
         int index=0;
         while(!connections.isEmpty()){
@@ -159,6 +159,7 @@ class Graph {
         this.findCycles();
         TreeSet<String> cycles=gcf.getCycles();
         if(cycles.size()<=0){
+            this.bridges=new TreeSet<>();
             this.bridges.add("Each edge is a bridge");
         }
         else{
@@ -220,7 +221,6 @@ class Graph {
         }
         return length;
     }
-    
     private double getMaxCycle(TreeSet<String> cycles) {
         double length=Double.NEGATIVE_INFINITY;
         for(String cycle:cycles){
@@ -248,22 +248,42 @@ class Graph {
     }
     
     private void findBridges(TreeSet<String> cycles) {
-        ArrayList<Node> originalNodes=new ArrayList<>(Arrays.asList(this.nodes));
-        TreeSet<String> nodesNames=new TreeSet<>();
+        ArrayList<String> cycleEdges=new ArrayList<>();
+        ArrayList<String> originalEdges=new ArrayList<>(rf.getConnections());
         for(String cycle:cycles){
-            nodesNames.addAll(Arrays.asList(cycle.split(",")));
-        }
-        ArrayList<Node>cyclesNodes=new ArrayList<>();
-        for(String nodeName:nodesNames){
-            cyclesNodes.add(this.getNode(nodeName));
-        }
-        originalNodes.removeAll(cyclesNodes);
-        this.bridges=new TreeSet<>();
-        for(Node node:originalNodes){
-            for(Node neighbour:node.getNeighbours()){
-                this.bridges.add("("+node+","+neighbour+")");
+            String tempCycles[]=cycle.split(",");
+            cycleEdges.add("("+tempCycles[0]+","+tempCycles[tempCycles.length-1]+")");
+            for(int i=0;i<tempCycles.length-1;i++){
+                cycleEdges.add("("+tempCycles[i]+","+tempCycles[i+1]+")");
             }
         }
+        while(!cycleEdges.isEmpty()){
+        String tempCon=cycleEdges.remove(0);
+        for(int i=0;i<originalEdges.size();i++){
+            if(tempCon.equalsIgnoreCase(originalEdges.get(i))||(tempCon.substring(1,2).equalsIgnoreCase(originalEdges.get(i).substring(3,4))&&tempCon.substring(3,4).equalsIgnoreCase(originalEdges.get(i).substring(1,2)))){
+                originalEdges.remove(i);
+            }
+        }
+        }
+         this.bridges=new TreeSet<>();
+        for(String edge:originalEdges){
+                this.bridges.add(edge);
+        }
+//        TreeSet<String> nodesNames=new TreeSet<>();
+//        for(String cycle:cycles){
+//            nodesNames.addAll(Arrays.asList(cycle.split(",")));
+//        }
+//        ArrayList<Node>cyclesNodes=new ArrayList<>();
+//        for(String nodeName:nodesNames){
+//            cyclesNodes.add(this.getNode(nodeName));
+//        }
+//        originalNodes.removeAll(cyclesNodes);
+//        this.bridges=new TreeSet<>();
+//        for(Node node:originalNodes){
+//            for(Node neighbour:node.getNeighbours()){
+//                this.bridges.add("("+node+","+neighbour+")");
+//            }
+//        }
     }
     
     private String getBridges() {
