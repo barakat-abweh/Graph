@@ -131,7 +131,7 @@ class Graph {
         }
     }
     private int bfs() {
-        int numOfVisitedNodes=0;
+        int numOfVisitedNodes=1;
         Queue queue=new LinkedList();
         queue.add(this.nodes[0]);
         this.nodes[0].visited=true;
