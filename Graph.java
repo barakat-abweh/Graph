@@ -82,7 +82,7 @@ class Graph {
     }
     
     final private void initializeNodes() {
-        rf=new ReadFile("/home/theblackdevil/Desktop","graph.in");
+        rf=new ReadFile("path to file","input file name");
         this.nodes=new Node[rf.getNodesNames().length];
         for(int i=0;i<nodes.length;i++){
             this.nodes[i]=new Node(rf.getNodeName(i));
@@ -276,7 +276,7 @@ class Graph {
     }
     
     private void outputTofile() {
-        new OutputFile("/home/theblackdevil/Desktop","graph.out",this.toString());
+        new OutputFile("path to file","output file name",this.toString());
     }
     
     private long getrunningTime() {
